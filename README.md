@@ -5,7 +5,7 @@ To create a new formation, first, create a public github repository
 
 Then, clone it locally
 
-## Initialize the formation
+## Initialize the formation
 Simply run the following commands
 
 ``` bash
@@ -17,7 +17,7 @@ rm -rf docs/ && mv reveal.js-master/ docs/
 This will create the base formation template
 Then, add, commit and push all the files
 
-## Host it online
+## Host it online
 
 To host and setup online, go to settings on your repo, to Pages category.
 Activate it on branch main, for folder docs, and Save it
