@@ -1,40 +1,119 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/black.css" />
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <!-- https://bash.cyberciti.biz/guide/$IFS -->
+    <!-- https://putaindecode.io/articles/maitriser-les-redirections-shell/ -->
+    <!-- cat, grep, find, sed, awk, cut, ... -->
+    <!-- >, 1>&2, |, /dev/null, ... -->
+    <!-- && , ||, /dev/random, /dev/urandom, IFS, ... -->
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <section data-markdown>
+              # Shell
+              ### Les bases du shell
+          </section>
+          <section data-markdown>
+              # Sommaire
+              * Les commandes de base
+              * Les redirections & fichiers spéciaux
+              * Les commandes (suite)
+              * Les opérateurs (&& et ||)
+              * Exercices : shell "hands-on", exercices
+              * Exercices : création d'un script bash complet
+          </section>
+      </section>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+        <section>
+          <h3>Les commandes de base</h3>
+          <section data-markdown>
+            # man
+            Doc et référence des commandes systèmes
+            ```bash
+            man man
+            ```
+            `Entrée` pour faire défiler, `q` pour quitter
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+            Tips: marche aussi en recherche google
+          </section>
+          <section data-markdown>
+            # Cat
+            Concatène des fichiers vers l'output standard
+            ```bash
+            cat fichier1 fichier2
+            ```
+          </section>
+          <section data-markdown>
+            # ls
+            Liste le contenu d'un répertoire (le courant par défaut)
+            ```bash
+            ls .
+            ls ~
+            ```
+
+            Questions : 
+            - Comment lister tous les fichiers d'un dossier en liste, du plus petit au plus gros, avec la taille lisible ? 
+            - Comment lister tous les fichiers d'un dossier en liste, du plus récent au plus vieux, avec la taille lisible ? 
+          </section>
+          <section data-markdown>
+            # alias
+            Créer des alias de commandes (et les lister)
+            ```bash
+            alias
+            alias my_ls="ls -larth"
+            alias remote-ssh="ssh user@xxx.xxx.x.xx"
+            ```
+
+            Questions
+            - Que fait la commande `ll` ?
+            - Créer un alias pour activer le VPN de AB
+
+            Tips : les alias peuvent être chargés automatiquement en les ajoutant dans `~/.bash_rc` ou `~/.bash_aliases` (mieux)
+          </section>
+
+          <section data-markdown>
+            # Sommaire
+            * Les commandes de base
+            * Les redirections & fichiers spéciaux
+            * Les commandes (suite)
+            * Les opérateurs (&& et ||)
+            * Exercices : shell "hands-on", exercices
+            * Exercices : création d'un script bash complet
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
 </html>
