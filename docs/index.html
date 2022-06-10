@@ -26,24 +26,35 @@
       <div class="slides">
         <section>
           <section data-markdown>
-              # Shell
+              ## Shell
               ### Les bases du shell
           </section>
           <section data-markdown>
-              # Sommaire
+              ## Sommaire
               * Les commandes de base
               * Les redirections & fichiers spéciaux
               * Les commandes (suite)
-              * Les opérateurs (&& et ||)
+              * Les Expressions régulières (Regex ou regexp)
               * Exercices : shell "hands-on", exercices
               * Exercices : création d'un script bash complet
           </section>
       </section>
 
         <section>
-          <h3>Les commandes de base</h3>
+          <h4>Les commandes de base</h4>
           <section data-markdown>
-            # man
+            ## Les basiques des basiques
+            ```bash
+            mv file1 file2 # Déplacer/renommer un fichier
+            cp file1 copy1 # Copier un fichier
+            rm file1 # Supprimer un fichier
+            rmdir dossier1 # Supprimer un dossier vide
+            rm -rf dossier1 # Supprimer un dossier et son contenu
+            mkdir -p dossier/sub1/sub2 # Créer une arborescence de dossier
+            ```
+          </section>
+          <section data-markdown>
+            ## [man](https://man7.org/linux/man-pages/man1/man.1.html)
             Doc et référence des commandes systèmes
             ```bash
             man man
@@ -53,49 +64,227 @@
             Tips: marche aussi en recherche google
           </section>
           <section data-markdown>
-            # Cat
+            ## [cat](https://man7.org/linux/man-pages/man1/cat.1.html)
             Concatène des fichiers vers l'output standard
             ```bash
             cat fichier1 fichier2
             ```
           </section>
           <section data-markdown>
-            # ls
+            ## [ls](https://man7.org/linux/man-pages/man1/ls.1.html)
             Liste le contenu d'un répertoire (le courant par défaut)
             ```bash
             ls .
             ls ~
             ```
-
-            Questions : 
+          </section>
+          <section data-markdown>
+            ## [ls](https://man7.org/linux/man-pages/man1/ls.1.html)
+            Questions
             - Comment lister tous les fichiers d'un dossier en liste, du plus petit au plus gros, avec la taille lisible ? 
             - Comment lister tous les fichiers d'un dossier en liste, du plus récent au plus vieux, avec la taille lisible ? 
           </section>
+
           <section data-markdown>
-            # alias
+            ## [alias](https://man7.org/linux/man-pages/man1/alias.1p.html)
             Créer des alias de commandes (et les lister)
             ```bash
             alias
             alias my_ls="ls -larth"
             alias remote-ssh="ssh user@xxx.xxx.x.xx"
             ```
-
+            Tips : les alias peuvent être chargés automatiquement en les ajoutant dans `~/.bashrc` ou `~/.bash_aliases` (mieux)
+          </section>
+          <section data-markdown>
+            ## [alias](https://man7.org/linux/man-pages/man1/alias.1p.html)
             Questions
             - Que fait la commande `ll` ?
             - Créer un alias pour activer le VPN de AB
-
-            Tips : les alias peuvent être chargés automatiquement en les ajoutant dans `~/.bashrc` ou `~/.bash_aliases` (mieux)
           </section>
 
           <section data-markdown>
-            # find
+            ## [find](https://man7.org/linux/man-pages/man1/find.1.html)
             Rechercher des fichiers ou dossiers
             ```bash
             find  . -type f
             find / -type d 
             find ~ -name .bashrc
             ```
-          </section>        </section>
+          </section>
+          <section data-markdown>
+            ## [grep](https://man7.org/linux/man-pages/man1/grep.1.html)
+            Recherche un pattern dans des fichiers
+            ```bash
+            grep error ./logs
+            find / -type d 
+            find ~ -name .bashrc
+            ```
+          </section>
+          <section data-markdown>
+            ## [head](https://man7.org/linux/man-pages/man1/head.1.html)
+            ## [tail](https://man7.org/linux/man-pages/man1/tail.1.html)
+            Affiche les premières/dernières lignes d'un fichier
+            ```bash
+            head ./logs/my_long_log.txt
+            tail -f ./logs/my_current_file.txt
+            ```
+          </section>
+
+        </section>
+        <section>
+          <h4>Les redirections et fichiers spéciaux</h4>
+
+          <section data-markdown>
+            ## Entrée, sortie standard et sortie d'erreur
+            En bash, il existe trois "descripteurs" particulier
+            Indique au processus de rediriger la sortie standard vers un fichier
+            ```
+            stdin => l'entrée (0)
+            stdout => la sortie standard (1)
+            stderr => la sortie d'erreur
+            ```
+          </section>
+          <section data-markdown>
+            ## la redirection de sortie > (ou >>)
+            Indique au processus de rediriger la sortie standard vers un fichier
+            ```bash
+            echo "Hello" > message
+            cat message
+            echo "Hello2" >> message # ajoute à la fin
+            cat message
+            ```
+          </section>
+          <section data-markdown>
+            ## la redirection de sortie > (ou >>)
+            Indique au processus de rediriger la sortie standard vers un fichier
+            ```bash
+            echo "Hello" > message
+            cat message
+            echo "Hello2" >> message # ajoute à la fin
+            cat message
+            ```
+          </section>
+          <section data-markdown>
+            ## la redirection de sortie > (ou >>)
+            Il est aussi possible de rediriger la sortie vers un autre descripteur en utilisant `X>&Y`
+            ```bash
+            echo "Erreur" 1>&2
+            mon_programme 2>1& >> log.txt
+            mon_programme >/dev/null 2>&1
+            ```
+          </section>
+          <section data-markdown>
+            ## le fichier "trou noir" `/dev/null`
+            N'affiche rien si on l'affiche, efface tout ce qui est écrit dedans
+            ```bash
+            echo "Hello" >/dev/null
+            cat /dev/null
+            ```
+            Tips: peut service à faire disparaitre des logs trop verbeux d'une commande (pip par exemple)
+          </section>
+          <section data-markdown>
+            ## la redirection d'entrée
+            Il est aussi possible de rediriger l'entrée depuis un fichier
+            ```bash
+            grep lo < message
+            ```
+          </section>
+          <section data-markdown>
+            ## le pipe |
+            Opérateur qui permet d'enchainer des commandes
+            Il relie la sortie standard vers l'input de la commande suivante
+            ```bash
+            ls -a  | grep README.md
+            ```
+            Tips: il existe aussi |& pour la sortie d'erreur
+          </section>
+          <section data-markdown>
+            ## le pipe |
+            Question:
+            - En utilisant `ls`, `tail`, et `wc`, compter le nombre de fichier dans le répertoire courant (. et .. exclus)
+            - Que fait la commande 
+            ```bash
+            cut -d ' ' -f 1 /var/log/apache2/access_logs |  uniq -c |  sort -n
+            ```
+            Tips : https://explainshell.com/ peut aider à comprendre
+          </section>
+
+        </section>
+
+        <section>
+          <h4>Les commandes (la suite)</h4>
+
+          <section data-markdown>
+            ## xargs
+            Permet de construire et executer des lignes de commandes
+            ```
+            ls -a | xargs cat
+            ls -a  | grep ".txt$" | xargs -n1 -I {} echo mv {} bazire/{}| sh
+            ```
+          </section>
+
+          <section data-markdown>
+            ## sed
+            Editeur de flux (permet de transformer l'input d'une pipeline de commande entre deux commande)
+            D'une autre façon, il permet d'appliquer une regex à un input
+            ```
+            echo "Bonjour toto" | sed -e "s/toto/$(id -un)/"
+            ls -a  | grep ".txt$" | xargs -n1 -I {} echo mv {} bazire/{}| sh
+            echo "help: ## Display commands help" | sed -e 's/^\(.*\):.* ## \(.*\)/\\\\033[36m\1\\\\033[0m \2/g' | xargs echo -e
+            ```
+          </section>
+
+        </section>
+
+        <section>
+          <h4>Les expressions régulières</h4>
+
+          <section data-markdown>
+            ## C'est quoi une Regex ?
+            Il s'agit d'une syntaxe permettant de reconnaître un ensemble de mots répondant aux contraintes
+            Cela permet de chercher de manière efficace et de modifier ses expressions
+
+            Utilisation : via sed, dans l'éditeur de code, dans les langages
+          </section>
+
+          <section data-markdown>
+            ## La grammaire
+            ```
+            r"abc" => matchera n'importe quelle chaine de caractères contenant abc (dont abc)
+            r"[a-z]{10}" => matchera n'importe quelle chaine de caractères contenant 10 lettres minuscules
+            r"[a-zA-Z0-9]{10}" => matchera n'importe quelle chaine de caractères contenant 10 lettres ou chiffres
+            r"^abc" => matchera n'importe quelle chaine de caractères commençant par 'abc'
+            r"abc$" => matchera n'importe quelle chaine de caractères terminant par 'abc'
+            r"^abc$" => matchera exactement 'abc'
+            r"^.$" => matchera toute chaine de un caractère
+            r".*" => matchera toutes les chaines, y compris la chaine vide
+            r".+" => matchera toutes les chaines d'au moins un caractère
+            ```
+          </section>
+          <section data-markdown>
+            ## Questions
+            ```
+            r"^[a-c]{1,10}$" => ?
+            r"^abc?$" => ?
+            r"^a[bc0-9]*d?$" => ?
+            ```
+            Tips : 
+            - https://www.regexplanet.com/advanced/python/index.html
+            - lien de jonas
+          </section>
+          <section data-markdown>
+            ## La grammaire (suite)
+            ```
+            ()
+            ?
+            lookahead
+            negative lookahead
+            group
+            named group
+            ```
+          </section>
+
+        </section>
       </div>
     </div>
 
