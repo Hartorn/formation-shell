@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
 
-    <title>reveal.js</title>
+    <title>Formation shell</title>
 
     <link rel="stylesheet" href="dist/reset.css" />
     <link rel="stylesheet" href="dist/reveal.css" />
@@ -35,8 +35,7 @@
               * Les redirections & fichiers spéciaux
               * Les commandes (suite)
               * Les Expressions régulières (Regex ou regexp)
-              * Exercices : shell "hands-on", exercices
-              * Exercices : création d'un script bash complet
+              * Le script Bash
           </section>
       </section>
 
@@ -51,6 +50,7 @@
             rmdir dossier1 # Supprimer un dossier vide
             rm -rf dossier1 # Supprimer un dossier et son contenu
             mkdir -p dossier/sub1/sub2 # Créer une arborescence de dossier
+            touch monfichier # Crée un fichier vide
             ```
           </section>
           <section data-markdown>
@@ -62,6 +62,8 @@
             `Entrée` pour faire défiler, `q` pour quitter
 
             Tips: marche aussi en recherche google
+
+            Aussi, souvent il y a un -h ou --help
           </section>
           <section data-markdown>
             ## [cat](https://man7.org/linux/man-pages/man1/cat.1.html)
@@ -106,18 +108,18 @@
             ## [find](https://man7.org/linux/man-pages/man1/find.1.html)
             Rechercher des fichiers ou dossiers
             ```bash
-            find  . -type f
-            find / -type d 
-            find ~ -name .bashrc
+            find . -type f # Liste les fichiers
+            find / -type d # Liste les dossiers
+            find ~ -name .bashrc # Trouve les fichiers/dossiers nommés .bashrc
+            find . -type f -mtime -30 -name '*.py' # Liste les fichiers modifiés il y a moins de 30 jours
             ```
           </section>
           <section data-markdown>
             ## [grep](https://man7.org/linux/man-pages/man1/grep.1.html)
             Recherche un pattern dans des fichiers
             ```bash
-            grep error ./logs
-            find / -type d 
-            find ~ -name .bashrc
+            grep error ./logs.txt # Cherche "error" dans le fichiers ./logs.txt
+            grep -ri error -C5 ./log_folder # ?
             ```
           </section>
           <section data-markdown>
@@ -125,8 +127,9 @@
             ## [tail](https://man7.org/linux/man-pages/man1/tail.1.html)
             Affiche les premières/dernières lignes d'un fichier
             ```bash
-            head ./logs/my_long_log.txt
+            head -n 5 ./logs/my_long_log.txt
             tail -f ./logs/my_current_file.txt
+            head -n -5 ./logs/my_long_log.txt # ?
             ```
           </section>
 
@@ -136,16 +139,15 @@
 
           <section data-markdown>
             ## Entrée, sortie standard et sortie d'erreur
-            En bash, il existe trois "descripteurs" particulier
-            Indique au processus de rediriger la sortie standard vers un fichier
+            En bash, il existe trois "descripteurs" particuliers
             ```
             stdin => l'entrée (0)
             stdout => la sortie standard (1)
-            stderr => la sortie d'erreur
+            stderr => la sortie d'erreur (2)
             ```
           </section>
           <section data-markdown>
-            ## la redirection de sortie > (ou >>)
+            ## la redirection de sortie >, >>, >&
             Indique au processus de rediriger la sortie standard vers un fichier
             ```bash
             echo "Hello" > message
@@ -155,22 +157,11 @@
             ```
           </section>
           <section data-markdown>
-            ## la redirection de sortie > (ou >>)
-            Indique au processus de rediriger la sortie standard vers un fichier
+            ## la redirection de sortie >, >>, >&
+            Il est aussi possible de rediriger une sortie vers un autre descripteur en utilisant `X>&Y`
             ```bash
-            echo "Hello" > message
-            cat message
-            echo "Hello2" >> message # ajoute à la fin
-            cat message
-            ```
-          </section>
-          <section data-markdown>
-            ## la redirection de sortie > (ou >>)
-            Il est aussi possible de rediriger la sortie vers un autre descripteur en utilisant `X>&Y`
-            ```bash
-            echo "Erreur" 1>&2
-            mon_programme 2>1& >> log.txt
-            mon_programme >/dev/null 2>&1
+            echo "Erreur" 1>&2 # "Crée" une erreur
+            mon_programme 2>&1 >> log.txt # Append tout dans le fichier log.txt
             ```
           </section>
           <section data-markdown>
@@ -179,8 +170,9 @@
             ```bash
             echo "Hello" >/dev/null
             cat /dev/null
+            mon_programme >/dev/null 2>&1 # Plus de log
             ```
-            Tips: peut service à faire disparaitre des logs trop verbeux d'une commande (pip par exemple)
+            Tips: peut servir à faire disparaitre des logs trop verbeux d'une commande (pip par exemple)
           </section>
           <section data-markdown>
             ## la redirection d'entrée
@@ -191,10 +183,10 @@
           </section>
           <section data-markdown>
             ## le pipe |
-            Opérateur qui permet d'enchainer des commandes
+            Opérateur qui permet d'enchainer des commandes.
             Il relie la sortie standard vers l'input de la commande suivante
             ```bash
-            ls -a  | grep README.md
+            ls -a | grep README.md
             ```
             Tips: il existe aussi |& pour la sortie d'erreur
           </section>
@@ -222,14 +214,34 @@
             ls -a  | grep ".txt$" | xargs -n1 -I {} echo mv {} bazire/{}| sh
             ```
           </section>
+          <section data-markdown>
+            ## awk
+            Langage de "scanning" et de "processing"
+            ``` bash
+            cat - > marks.txt << EOF
+            1) Amit Physics 80
+            2) Rahul Maths 90
+            3) Shyam Biology 87
+            4) Kedar English 85
+            5) Hari History 89
+            EOF
+
+            awk '{print $3 "\t" $4}' marks.txt
+            awk '/a/ {print $0}' marks.txt
+            awk '/a/ {print $4 "\t" $3}' marks.txt
+            awk '/a/{++cnt} END {print "Count = ", cnt}' marks.txt
+            awk 'length($0) > 18' marks.txt
+
+            ```
+          </section>
 
           <section data-markdown>
             ## sed
-            Editeur de flux (permet de transformer l'input d'une pipeline de commande entre deux commande)
-            D'une autre façon, il permet d'appliquer une regex à un input
-            ```
+            Editeur de flux (permet de transformer l'input d'une pipeline de commande entre deux commandes).
+
+            "En gros", il permet d'appliquer une regex à un input.
+            ```bash
             echo "Bonjour toto" | sed -e "s/toto/$(id -un)/"
-            ls -a  | grep ".txt$" | xargs -n1 -I {} echo mv {} bazire/{}| sh
             echo "help: ## Display commands help" | sed -e 's/^\(.*\):.* ## \(.*\)/\\\\033[36m\1\\\\033[0m \2/g' | xargs echo -e
             ```
           </section>
@@ -262,6 +274,15 @@
             ```
           </section>
           <section data-markdown>
+            ## La grammaire (suite)
+            ```
+            () # Groupe capturant
+            x? # Optionnel
+            (?=foo)	# Lookahead
+            (?!foo)	# Negative Lookahead
+            ```
+          </section>
+          <section data-markdown>
             ## Questions
             ```
             r"^[a-c]{1,10}$" => ?
@@ -269,21 +290,107 @@
             r"^a[bc0-9]*d?$" => ?
             ```
             Tips : 
+            - https://regex101.com/
             - https://www.regexplanet.com/advanced/python/index.html
-            - lien de jonas
           </section>
           <section data-markdown>
-            ## La grammaire (suite)
+            ## Exercice
+            - Copier le premier paragraphe de https://www.lipsum.com/
+            - Ecrire une régex qui matche tous les mots en majuscules
+            - Puis, remplacer le mot par la première lettre de ce mot
+          </section>
+        </section>
+        <section>
+          <h4>Script bash</h4>
+          <section data-markdown>
+            ## Le shebang
+            Donne un lien vers l'interpréteur (quand on lance le fichier en `./monfichier`)
+            ```bash
+            #!/bin/sh
+            #!/bin/bash
+            #!/usr/bin/env python3
             ```
-            ()
-            ?
-            lookahead
-            negative lookahead
-            group
-            named group
+          </section>
+          <section data-markdown>
+            ## Les variables
+            ```bash
+            #!/bin/bash
+            # Simple variable
+            STR="Hello World!"
+            echo $STR
+            # Can contain output of commande
+            OF=/var/my-backup-$(date +%Y%m%d).tgz
+            echo $OF
+            # Also, we got list
+            allThreads=(1 2 4 8 16 32 64 128)
+            # We can iterate on values
+            for t in ${allThreads[@]}; do
+              echo $t
+            done
+            # or on index
+            for i in ${!allThreads[@]}; do
+              echo $i ${allThreads[$i]}
+            done
+            # You can even have mapping (associative array)
+            declare -A myAssociativeArray
+            myAssociativeArray[a]=123
+            myAssociativeArray[b]=456
+            myAssociativeArray+=([c]=789 [d]=012)
+            echo ${myAssociativeArray[*]}
+            for i in ${!myAssociativeArray[@]}; do
+              echo $i ${myAssociativeArray[$i]}
+            done
             ```
           </section>
 
+          <section data-markdown>
+            ## Les arguments
+            $1, $2, ..., ${10}
+            Donne un lien vers l'interpréteur (quand on lance le fichier en `./monfichier`)
+            ```bash
+            #!/bin/bash            
+            echo "Mon script est : $0"
+            echo "Ou ${BASH_SOURCE[0]}"
+            echo "Tous mes arguments : $*"
+            echo "Le nombre d'arguments : $#"
+            echo "Pour itérer : $@"
+            echo "Le 1er paramètre est : $1"
+            echo "Code de retour de la dernière commande  : $?"            
+            ```
+          </section>
+
+
+          <section data-markdown>
+            ## Exercice
+
+            Ecrire un script qui
+            - prend en entrée un fichier
+            - vérifie si ce fichier existe
+            - affiche et retourne une erreur si il n'existe pas
+            - sinon, compte et affiche le nombre d'occurences de l'argument 2
+
+          </section>
+          <section data-markdown>
+            ## Exercice
+
+            Ecrire un script qui
+            - prend en entrée un dossier
+            - liste et affiche les fichiers CSV
+            - V1 : pour chaque fichier CSV du dossier, extraire la première colonne et l'exporter dans un fichier suffixé par _col1.csv
+            - V2 : pour chaque fichier CSV du dossier, extraire les colonnes données en arguments et l'exporter dans un fichier suffixé par _${col}.csv
+          
+          </section>
+        </section>
+
+          <section data-markdown>
+            ## Ressources 
+            - [`set -euo pipefail`](https://gist.github.com/vncsna/64825d5609c146e80de8b1fd623011ca)
+            - https://linuxconfig.org/bash-script-display-usage-and-check-user
+            - https://www.shellcheck.net/#
+            - https://regex101.com/
+            - https://www.regexplanet.com/advanced/python/index.html
+            - https://explainshell.com
+            - https://man7.org/linux/man-pages/index.html
         </section>
       </div>
     </div>
